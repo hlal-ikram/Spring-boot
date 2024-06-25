@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{fragments::header}"></head>
+<body id="page-top">
+<script th:inline="javascript">
+    /* Récupération de la liste des départements depuis le modèle */
+    var categories = [[${MembreDepartement}]] ;
+
+    /* Affichage de chaque département dans la console */
+    categories.forEach(function(departement) {
+        console.log("La valeur : ", departement);
+    });
+</script>
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--Sidebar-->
+    <ul th:replace="~{fragments::sidebar}"></ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="~{fragments::top-navbar}"></nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleAddCategoryModal"
+                    data-whatever="@mdo">Nouveau Membre
+            </button>
+            <p th:if="${size == 0}">Aucune Departement</p>
+            <div th:if="${success}" class="text-center alert alert-success">
+                <p th:text="${success}">
+                </p>
+            </div>
+            <div th:if="${error}" class="text-center alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+
+            <table class="table table-striped" >
+                <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+
+                    <th scope="col">Email</th>
+                    <th scope="col">Departement</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Modifier</th>
+                    <th scope="col">Supprimer</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="MembreDepartement : ${MembreDepartement}">
+                    <th scope="row" th:text="${MembreDepartement.firstName}"></th>
+                    <th scope="row" th:text="${MembreDepartement.lastName}"></th>
+                    <th scope="row" th:text="${MembreDepartement.username}"></th>
+                    <th th:text="${MembreDepartement.departement.nomDepartement}"></th>
+                    <th th:text="${MembreDepartement.role.name}"></th>
+                    <td>
+                        <a id="editButton" th:href="@{/findByIdMembers(id = ${MembreDepartement.id})}" class="btn btn-primary">Update</a>
+                    </td>
+                    <td>
+                        <a th:href="@{/delete-Members(id = ${MembreDepartement.id})}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer th:replace="~{fragments::footer}"></footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a th:replace="~{fragments::scroll}"></a>
+
+<!--Add Categories Modal-->
+<div class="modal fade" id="exampleAddCategoryModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleAddCategoryModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleAddCategoryModalLabel">Ajouter Membre</h5>
+            </div>
+            <form th:action="@{/save-Members}" method="post">
+                <div class="form-group">
+                    <label for="domaineExpertise" class="col-form-label">Domaine d'Expertise:</label>
+                    <input type="text" class="form-control" id="domaineExpertise" name="domaineExpertise">
+                </div>
+                <div class="form-group">
+                    <label for="laboratoire" class="col-form-label">Laboratoire:</label>
+                    <input type="text" class="form-control" id="laboratoire" name="laboratoire">
+                </div>
+
+                <div class="form-group">
+                    <label for="firstName" class="col-form-label">First Name:</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName">
+                </div>
+                <div class="form-group">
+                    <label for="lastName" class="col-form-label">Last Name:</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName">
+                </div>
+
+                <div class="form-group">
+                    <label for="username" class="col-form-label">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+
+
+
+
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+<!--End-->
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit departement</h5>
+            </div>
+            <div class="modal-body">
+                <form method="put" th:action="@{/update-Members}" >
+                    <div class="form-group">
+                        <label for="idEdit" class="col-form-label">ID
+                        </label> <input type="text" class="form-control" id="idEdit" name="id" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-form-label">Category
+                            Name</label> <input type="text" class="form-control" id="editname" name="nomDepartement">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End -->
+<!-- Bootstrap core JavaScript-->
+<div th:replace="~{fragments::script}"></div>
+
+<script th:src="@{/js/categories.js}"></script>
+</body>
+
+</html>
